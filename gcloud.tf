@@ -22,3 +22,4 @@ resource "google_compute_instance" "example" {
       nat_ip = "YOUR_EXTERNAL_IP"
     }
   }
+}
