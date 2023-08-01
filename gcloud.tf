@@ -1,8 +1,7 @@
-# main.tf
-
 provider "google" {
-  project = "golden-system-393111"
-  region  = "us-central1"
+  credentials = file("~/Desktop/golden-system-393111-1886b3d466d6.json")
+  project     = "golden-system-393111"
+  region      = "us-central1"
 }
 
 resource "google_compute_instance" "example" {
@@ -19,21 +18,6 @@ resource "google_compute_instance" "example" {
   network_interface {
     network = "default"
     access_config {
+      nat_ip = true
     }
   }
-
-  connection {
-    type        = "ssh"
-    user        = "USERNAME"
-    private_key = file("~/.ssh/id_rsa")
-    agent       = false
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "sudo apt update",
-      "sudo apt install -y git docker.io python3 python3-pip",
-      "sudo pip3 install flask"
-    ]
-  }
-}
