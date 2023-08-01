@@ -17,9 +17,5 @@ resource "google_compute_instance" "example" {
 
   network_interface {
     network = "default"
-    access_config {
-      // Replace "YOUR_EXTERNAL_IP" with a valid external IP address in us-central1 region
-      nat_ip = "YOUR_EXTERNAL_IP"
-    }
   }
 }
