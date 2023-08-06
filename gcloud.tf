@@ -5,7 +5,7 @@ provider "google" {
 }
 
 resource "google_container_cluster" "test" {
-  name     = "my-gke-cluster"
+  name     = "test-cluster"
   location = "us-central1"
   enable_autopilot = true
 }
