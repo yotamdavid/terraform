@@ -5,8 +5,9 @@ provider "google" {
 }
 
 resource "google_ml_engine_model" "test" {
-  enable_autopilot = true
   display_name    = "test-clusser"
   project         = "golden-system-393111"
   regions         = ["us-central1"]
+  enable_autopilot = true
+
 
