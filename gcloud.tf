@@ -4,7 +4,7 @@ provider "google" {
   region      = "us-central1"
 }
 
-resource "google_ml_engine_model" "test" {
+resource "google_container_cluster" "test" {
   display_name    = "test-clusser"
   project         = "golden-system-393111"
   regions         = ["us-central1"]
