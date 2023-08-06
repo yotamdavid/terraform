@@ -4,18 +4,20 @@ provider "google" {
   region      = "us-central1"
 }
 
-resource "google_compute_instance" "example" {
-  name         = "terraform-instance"
-  machine_type = "n1-standard-1"
-  zone         = "us-central1-a"
+resource "google_ml_engine_model" "my_classifier" {
+  name     = "test-classifier"
+  project  = "golden-system-393111"
+  regions  = ["us-central1"]
 
-  boot_disk {
-    initialize_params {
-      image = "debian-cloud/debian-10-buster-v20230711"
-    }
+  labels = {
+    environment = "production"
+    team        = "data-science"
   }
 
-  network_interface {
-    network = "default"
+  default_version {
+    name = "v1"
+    deployment_uri = "gs://my-bucket/trained_model"
+    runtime_version = "1.15"
+    machine_type = "n1-standard-4"
   }
 }
