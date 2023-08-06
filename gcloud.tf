@@ -9,5 +9,4 @@ resource "google_container_cluster" "test" {
   project         = "golden-system-393111"
   regions         = ["us-central1"]
   enable_autopilot = true
-
-
+}
