@@ -1,0 +1,84 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Clean Up') {
+            steps {
+                // Clean Up Project Files And Clone Git - To Update The Project
+                sh 'rm -rf ferari_website/'
+                sh 'git clone https://github.com/yotamdavid/ferari_website.git'
+                dir('ferari_website/web_project/terraform') {
+                    // Deletes Previous Docker Images
+                    sh 'docker rmi -f yotamdavid/ferari_website:latest'
+                }
+            }
+        }
+
+        stage('Build And Push The Image To Docker Hub') {
+            steps {
+                dir('ferari_website/web_project') {
+                    // Creates Docker Image
+                    sh "docker build -t yotamdavid/ferari_website:1.${BUILD_NUMBER} -t yotamdavid/ferari_website:latest ."
+                }
+                // Pushes Docker Image To Docker Hub
+                sh 'docker push yotamdavid/ferari_website:1.${BUILD_NUMBER}'
+                sh 'docker push yotamdavid/ferari_website:latest'
+
+                // Cleanup old Docker images
+                sh "docker image ls --format '{{.ID}}' yotamdavid/ferari_website --filter 'dangling=false' | sort -r | awk 'NR>4' | xargs -I {} docker image rm -f {}"            
+            }
+        }
+
+        stage('Creating a Cluster') {
+            steps {
+                // Runs tests from the main machine on the website
+                dir('ferari_website/web_project') {
+                    sh 'rm -rf terraform'
+                    sh 'git clone https://github.com/yotamdavid/terraform.git'
+                    dir('terraform') {
+                        sh 'terraform init'
+                        sh 'terraform apply -auto-approve'
+                    }
+                }
+            }
+        }
+
+        stage('Running k8s On Test Server') {
+            steps {
+                // Runs tests from the main machine on the website
+                sh 'gcloud container clusters get-credentials test-cluster --project golden-system-393111 --region us-central1'
+                sh 'rm -rf k8s_project'
+                sh 'git clone https://github.com/yotamdavid/k8s_project.git'
+                dir('k8s_project') {
+                    sh 'kubectl apply -f test_deploy.yaml'
+                    sh 'kubectl apply -f test_servis.yaml'
+                    sh 'chmod +x test.sh'
+                    sh './test.sh'
+                    sh 'kubectl delete pods --all'
+                    sh 'kubectl delete services --all'
+                    sh 'kubectl delete deployments --all'
+                }
+            }
+        }
+        
+        stage('Destroy Test Server') {
+            steps {
+                dir('ferari_website/web_project/terraform') {
+                    sh 'terraform init'
+                    sh 'terraform destroy -auto-approve'
+                }
+            }
+        }
+
+        stage('Running k8s On Prod Server') {
+            steps {
+                // Runs tests from the main machine on the website
+                sh 'gcloud container clusters get-credentials yotamk8s --project golden-system-393111 --region us-central1'
+                dir('k8s_project') {
+                    sh 'kubectl apply -f test_deploy.yaml'
+                    sh 'kubectl apply -f test_servis.yaml'
+                }
+            }
+        }
+    }
+}
