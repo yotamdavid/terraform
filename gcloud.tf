@@ -8,5 +8,4 @@ resource "google_container_cluster" "test" {
   name     = "my-gke-cluster"
   location = "us-central1"
   enable_autopilot = true
-  remove_default_node_pool = true  # נסה להסיר את סביבת העבודה הברירתית
 }
