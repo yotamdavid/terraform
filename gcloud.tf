@@ -7,6 +7,5 @@ provider "google" {
 resource "google_container_cluster" "test" {
   name    = "test-clusser"
   project         = "golden-system-393111"
-  regions         = "us-central1"
   enable_autopilot = true
 }
