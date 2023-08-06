@@ -20,9 +20,12 @@ resource "google_ml_engine_model" "my_classifier" {
     package_uris = ["gs://my-bucket/trained_model/my_model-1.0.tar.gz"]
   }
 
-  default_version {
+ default_version {
     name            = "v1"
+    
     runtime_version = "1.15"
+    
     machine_type    = "n1-standard-4"
   }
 }
+
