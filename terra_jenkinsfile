@@ -73,7 +73,7 @@ pipeline {
         stage('Running k8s On Prod Server') {
             steps {
                 // Runs tests from the main machine on the website
-                sh 'gcloud container clusters get-credentials yotamk8s --project golden-system-393111 --region us-central1'
+                sh 'gcloud container clusters get-credentials monitoring-k8s --project golden-system-393111 --region us-central1'
                 dir('k8s_project') {
                     sh 'kubectl apply -f test_deploy.yaml'
                     sh 'kubectl apply -f test_servis.yaml'
@@ -82,7 +82,7 @@ pipeline {
         }
         stage('set a monitoring grafana') {
             steps {
-                sh 'gcloud container clusters get-credentials yotamk8s --project golden-system-393111 --region us-central1'
+                sh 'gcloud container clusters get-credentials monitoring-k8s --project golden-system-393111 --region us-central1'
                 sh 'kubectl create namespace monitoring'
                 sh 'helm repo add prometheus-community https://prometheus-community.github.io/helm-charts'
                 sh 'helm repo update'
