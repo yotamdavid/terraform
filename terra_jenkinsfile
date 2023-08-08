@@ -73,7 +73,7 @@ pipeline {
         stage('Running k8s On Prod Server') {
             steps {
                 // Runs tests from the main machine on the website
-                sh 'gcloud container clusters get-credentials monitoring-k8s --project golden-system-393111 --region us-central1-c'
+                sh 'gcloud container clusters get-credentials terraform-k8s-grafana --project golden-system-393111 --region us-east1-b'
                 dir('k8s_project') {
                     sh 'kubectl apply -f test_deploy.yaml'
                     sh 'kubectl apply -f test_servis.yaml'
@@ -82,14 +82,14 @@ pipeline {
         }
         stage('set a monitoring grafana') {
             steps {
-                sh 'gcloud container clusters get-credentials monitoring-k8s --project golden-system-393111 --region us-central1-c'
+                sh 'gcloud container clusters get-credentials terraform-k8s-grafana --project golden-system-393111 --region us-east1-b'
                 sh 'kubectl create namespace monitoring'
                 sh 'helm repo add prometheus-community https://prometheus-community.github.io/helm-charts'
                 sh 'helm repo update'
                 sh 'helm install prometheus prometheus-community/kube-prometheus-stack --namespace monitoring'
                 sh 'kubectl get pods -n monitoring'
                 sh 'kubectl get svc -n monitoring'
-                sh 'kubectl port-forward svc/prometheus-kube-prometheus-prometheus -n monitoring 9090'
+                sh 'nohup kubectl port-forward svc/prometheus-kube-prometheus-prometheus -n monitoring 9090 &'
                 sh 'echo(now edit the grafana service from ClusterIP to LoadBalancer)'
                 sh 'echo(The monitor has been set up successfully)'
             }
