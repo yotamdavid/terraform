@@ -90,7 +90,8 @@ pipeline {
                 sh 'kubectl get pods -n monitoring'
                 sh 'kubectl get svc -n monitoring'
                 sh 'kubectl port-forward svc/prometheus-kube-prometheus-prometheus -n monitoring 9090'
-                sh 'echo(now edit the grafana service from ClusterIP to LoudBalancer)'
+                sh 'echo(now edit the grafana service from ClusterIP to LoadBalancer)'
+                sh 'echo(The monitor has been set up successfully)'
             }
         }
     }
