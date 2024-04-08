@@ -1,13 +1,13 @@
 # main.tf
 
 provider "aws" {
-  region = "us-east" # השנה לאזור תקין אם רוצים
+  region = "us-east" 
 }
 
 resource "aws_instance" "example" {
-  ami           = "ami-0c55b159cbfafe1f0" # AMI ID, כדאי להשתמש בתמונת AMI תקינה
+  ami           = "ami-0c55b159cbfafe1f0" # AMI ID, 
   instance_type = "t2.micro" # גודל המכונה
-  key_name      = "yotam" # שם זוג המפתחות שלך, כדאי להיות כאן
+  key_name      = "yotam" 
 
   tags = {
     Name = "My EC2 Instance"
@@ -16,7 +16,7 @@ resource "aws_instance" "example" {
   connection {
     type        = "ssh"
     user        = "ec2-user"
-    private_key = file("~/home/yotam/Desktop/yotam.pem") # השנה למקום הנכון של קובץ המפתח הפרטי שלך
+    private_key = file("~/home/yotam/Desktop/yotam.pem") 
     host        = self.public_ip
   }
 }
@@ -38,8 +38,6 @@ resource "aws_instance" "example" {
       "docker-compose run -d",
       "sudo yum update -y",
 
-
-      # כאן תוכל להוסיף פקודות נוספות להתקנה והגדרה של תוכנות נוספות
     ]
   }
 }
